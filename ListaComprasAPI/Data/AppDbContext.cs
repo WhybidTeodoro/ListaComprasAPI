@@ -3,11 +3,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ListaComprasAPI.Data;
 
-//Dbcontext principal responsavel por gerenciar a conexão com o banco e mapear as entidades
+/// <summary>
+/// Dbcontext principal responsavel por gerenciar a conexão com o banco e mapear as entidades
+/// </summary>
 public class AppDbContext : DbContext
 {
 	public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-	//Tabela de usuarios do sistema.
+	/// <summary>
+	/// Tabela de usuarios do sistema.
+	/// </summary>
 	DbSet<User> Users { get; set; }
 }

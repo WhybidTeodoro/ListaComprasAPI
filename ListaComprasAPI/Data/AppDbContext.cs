@@ -13,5 +13,6 @@ public class AppDbContext : DbContext
 	/// <summary>
 	/// Tabela de usuarios do sistema.
 	/// </summary>
-	public DbSet<User> Users { get; set;}
+	public DbSet<User> Users => Set<User>();
+	public DbSet<ShoppingItem> ShoppingItems => Set<ShoppingItem>();
 }

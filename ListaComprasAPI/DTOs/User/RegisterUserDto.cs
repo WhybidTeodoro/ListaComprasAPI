@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ListaComprasAPI.DTOs;
+namespace ListaComprasAPI.DTOs.User;
 
 /// <summary>
 /// Dto para registro de novos usuarios. 

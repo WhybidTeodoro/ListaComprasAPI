@@ -31,7 +31,7 @@ public class ShoppingItem
     /// </summary>
     public DateTime CreatedAT { get; set; } = DateTime.UtcNow;
     /// <summary>
-    /// Id do usuario dono do item.
+    /// Id do usuario dono do item. 
     /// </summary>
     public int UserId { get; set; }
 }

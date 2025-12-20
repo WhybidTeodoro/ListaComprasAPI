@@ -1,5 +1,5 @@
 ﻿using ListaComprasAPI.Data;
-using ListaComprasAPI.DTOs;
+using ListaComprasAPI.DTOs.User;
 using ListaComprasAPI.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

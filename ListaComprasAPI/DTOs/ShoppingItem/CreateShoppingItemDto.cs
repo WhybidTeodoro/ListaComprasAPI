@@ -18,7 +18,7 @@ public class CreateShoppingItemDto
     /// Quantidade de item
     /// </summary>
     [Range(1, int.MaxValue, ErrorMessage = "A Quantidade deve ser maior que 0")]
-    public int Quntity { get; set; }
+    public int Quantity { get; set; }
 
     /// <summary>
     /// Preço unitario do item

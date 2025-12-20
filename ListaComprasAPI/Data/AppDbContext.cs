@@ -13,5 +13,5 @@ public class AppDbContext : DbContext
 	/// <summary>
 	/// Tabela de usuarios do sistema.
 	/// </summary>
-	DbSet<User> Users { get; set; }
+	public DbSet<User> Users { get; set;}
 }

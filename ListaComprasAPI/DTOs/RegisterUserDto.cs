@@ -19,7 +19,7 @@ public class RegisterUserDto
     /// </summary>
     [Required(ErrorMessage = "O email é obrigatório")]
     [EmailAddress(ErrorMessage = "O email informado não é valido")]
-    public string EmailAddress { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// Senha enviado pelo usuario. 

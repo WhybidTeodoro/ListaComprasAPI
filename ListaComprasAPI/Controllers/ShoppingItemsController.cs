@@ -26,7 +26,7 @@ public class ShoppingItemsController : ControllerBase
     /// Retorna todos os itens de compra do usuario autenticado
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ShoppingItemResponseDto>>> GetAll()
+    public async Task<IActionResult> GetAll()
     {
         int userId = GetUserIdFromToken();
 
@@ -49,7 +49,7 @@ public class ShoppingItemsController : ControllerBase
     /// </summary>
     
     [HttpPost]
-    public async Task<ActionResult> Create(CreateShoppingItemDto dto)
+    public async Task<IActionResult> Create(CreateShoppingItemDto dto)
     {
         int userId = GetUserIdFromToken();
 
@@ -63,18 +63,47 @@ public class ShoppingItemsController : ControllerBase
         };
         _context.ShoppingItems.Add(item);
         await _context.SaveChangesAsync();
+                
+        return CreatedAtAction(nameof(GetAll), new { id = item.Id }, MapToResponse(item));
+    }
 
-        var response = new ShoppingItemResponseDto
-        {
-            Id = item.Id,
-            Name = item.Name,
-            Quantity = item.Quantity,
-            UnitPrice = item.UnitPrice,
-            TotalPrice = item.Quantity * item.UnitPrice,
-            CreatedAt = DateTime.UtcNow
-        };
+    /// <summary>
+    /// Atualiza o item do usuario autenticado
+    /// </summary>
 
-        return CreatedAtAction(nameof(GetAll), new { id = item.Id }, response);
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, CreateShoppingItemDto dto)
+    {
+        int userId = GetUserIdFromToken();
+
+        var item = await _context.ShoppingItems.FirstOrDefaultAsync(i => i.Id == id && i.UserId == userId); 
+
+        if(item == null)
+            return NotFound("Item não encontrado");
+
+        item.Name = dto.Name;
+        item.Quantity = dto.Quantity;
+        item.UnitPrice = dto.UnitPrice;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        int userId = GetUserIdFromToken();
+
+        var item = await _context.ShoppingItems.FirstOrDefaultAsync(i => i.Id == id && i.UserId == userId);
+
+        if (item == null) 
+            return NotFound("Item não encontrado");
+
+        _context.ShoppingItems.Remove(item);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
     }
 
     private int GetUserIdFromToken()
@@ -85,5 +114,18 @@ public class ShoppingItemsController : ControllerBase
             throw new UnauthorizedAccessException("Token Invalido.");
 
         return int.Parse(userIdClaim.Value);
+    }
+
+    private static ShoppingItemResponseDto MapToResponse(ShoppingItem item)
+    {
+        return new ShoppingItemResponseDto
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Quantity = item.Quantity,
+            UnitPrice = item.UnitPrice,
+            TotalPrice = item.Quantity * item.UnitPrice,
+            CreatedAt = item.CreatedAT
+        };
     }
 }

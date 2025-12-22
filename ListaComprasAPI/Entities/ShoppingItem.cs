@@ -37,7 +37,13 @@ public class ShoppingItem
     /// Não é armazenado no banco, é calculado.
     /// </summary>
     [NotMapped]
-    public decimal TotalPrice => Quantity * UnitPrice;
+    public decimal TotalPrice 
+    { 
+        get
+        {
+            return Quantity * UnitPrice;
+        } 
+    }
     //Chave Estrangeira para lista
     [Required]
     public int ShoppingListId { get; set; }

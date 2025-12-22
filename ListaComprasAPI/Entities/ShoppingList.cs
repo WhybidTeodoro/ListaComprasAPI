@@ -26,4 +26,13 @@ public class ShoppingList
     public User user { get; set; } = null!;
     //Relacionamento 1:N de lista com itens
     public ICollection<ShoppingItem> Items { get; set; } = new List<ShoppingItem>();
+
+    [NotMapped]
+    public decimal TotalList 
+    {
+        get
+        {
+            return Items.Sum(item => item.TotalPrice);
+        }
+    }
 }

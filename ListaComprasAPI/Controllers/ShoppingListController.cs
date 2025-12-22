@@ -28,12 +28,19 @@ public class ShoppingListController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(CreateShoppingListDto dto)
     {
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        if (string.IsNullOrWhiteSpace(dto.Name))
+            return BadRequest("O Nome da lista não pode ser vazio");
+
         //Obtem o id do usuario a partir do token JWT
         var userId = GetUserIdFromToken();
 
         var shoppingList = new ShoppingList
         {
-            Name = dto.Name,
+            Name = dto.Name.Trim(),
             UserId = userId,
             CreatedAt = DateTime.UtcNow
         };
@@ -99,6 +106,13 @@ public class ShoppingListController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, CreateShoppingListDto dto)
     {
+
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        if (string.IsNullOrWhiteSpace(dto.Name))
+            return BadRequest("O Nome da lista não pode ser vazio");
+
         var userId = GetUserIdFromToken();
 
         var list = await _context.ShoppingList
@@ -107,7 +121,7 @@ public class ShoppingListController : ControllerBase
         if (list == null)
             return NotFound("Lista não encontrada");
 
-        list.Name = dto.Name;
+        list.Name = dto.Name.Trim();
 
         await _context.SaveChangesAsync();
 

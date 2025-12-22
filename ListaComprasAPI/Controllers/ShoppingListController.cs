@@ -33,7 +33,7 @@ public class ShoppingListController : ControllerBase
             return BadRequest(ModelState);
 
         if (string.IsNullOrWhiteSpace(dto.Name))
-            return BadRequest("O Nome da lista não pode ser vazio");
+            return BadRequest(new { message = "O Nome da lista não pode ser vazio" });
 
         //Obtem o id do usuario a partir do token JWT
         var userId = GetUserIdFromToken();
@@ -70,7 +70,7 @@ public class ShoppingListController : ControllerBase
             }).ToListAsync();
 
         if (lists == null)
-            return NotFound("Nenhuma lista de compras foi encontrada");
+            return NotFound(new { message = "Nenhuma lista de compras foi encontrada" });
 
         return Ok(lists);
     }
@@ -87,7 +87,7 @@ public class ShoppingListController : ControllerBase
             .FirstOrDefaultAsync(l => l.UserId == userId && l.Id == id);
 
         if (list == null)
-            return NotFound("Lista não encontrada");
+            return NotFound(new { message = "Nenhuma lista de compras foi encontrada" });
 
         var response = new ShoppingListResponseDto
         {
@@ -111,7 +111,7 @@ public class ShoppingListController : ControllerBase
             return BadRequest(ModelState);
 
         if (string.IsNullOrWhiteSpace(dto.Name))
-            return BadRequest("O Nome da lista não pode ser vazio");
+            return BadRequest(new { message = "O Nome da lista não pode ser vazio" });
 
         var userId = GetUserIdFromToken();
 
@@ -119,7 +119,7 @@ public class ShoppingListController : ControllerBase
             .FirstOrDefaultAsync(l => l.UserId == userId && l.Id == id);
 
         if (list == null)
-            return NotFound("Lista não encontrada");
+            return NotFound(new { message = "Nenhuma lista de compras foi encontrada" });
 
         list.Name = dto.Name.Trim();
 
@@ -141,7 +141,7 @@ public class ShoppingListController : ControllerBase
             .FirstOrDefaultAsync(l => l.Id == id && l.UserId == userId);
 
         if (list == null)
-            return NotFound("Lista não encontrada");
+            return NotFound(new { message = "Nenhuma lista de compras foi encontrada" });
 
         _context.ShoppingList.Remove(list);
         await _context.SaveChangesAsync();

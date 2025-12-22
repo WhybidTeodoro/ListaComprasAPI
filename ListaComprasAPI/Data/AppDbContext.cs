@@ -21,6 +21,6 @@ public class AppDbContext : DbContext
 	/// <summary>
 	/// Tabela de lista de compras
 	/// </summary>
-	public DbSet<ShoppingList> ShoppingList => Set<ShoppingList>();
+	public DbSet<ShoppingList> ShoppingLists => Set<ShoppingList>();
 
 }

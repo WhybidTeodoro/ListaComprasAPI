@@ -21,65 +21,66 @@ public class ShoppingItemsController : ControllerBase
     {
         _context = context;
     }
-
-    /// <summary>
-    /// Retorna todos os itens de compra do usuario autenticado
-    /// </summary>
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        int userId = GetUserIdFromToken();
-
-        var items = await _context.ShoppingItems
-            .Where(item => item.UserId == userId).Select(item => new ShoppingItemResponseDto
-            {
-                Id = item.Id,
-                Name = item.Name,
-                Quantity = item.Quantity,
-                UnitPrice = item.UnitPrice,
-                TotalPrice = item.Quantity * item.UnitPrice,
-                CreatedAt = DateTime.UtcNow,
-            }).ToListAsync();
-
-        return Ok(items);
-
-    }
     /// <summary>
     /// Cria um novo item de compra para um usuario autenticado
     /// </summary>
-    
+
     [HttpPost]
     public async Task<IActionResult> Create(CreateShoppingItemDto dto)
     {
         int userId = GetUserIdFromToken();
+
+        var shoppingList = await _context.ShoppingLists
+            .FirstOrDefaultAsync(l => l.Id == dto.ShoppingListId && l.UserId == userId);
+
+        if (shoppingList == null)
+            return NotFound(new { message = "Lista de compras não encontrada" });
 
         var item = new ShoppingItem
         {
             Name = dto.Name,
             Quantity = dto.Quantity,
             UnitPrice = dto.UnitPrice,
-            UserId = userId,
-            CreatedAT = DateTime.UtcNow
+            ShoppingListId = dto.ShoppingListId,
         };
         _context.ShoppingItems.Add(item);
         await _context.SaveChangesAsync();
-                
-        return CreatedAtAction(nameof(GetAll), new { id = item.Id }, MapToResponseItem(item));
+
+        return CreatedAtAction(nameof(GetById), new { id = item.Id }, MapToResponseItem(item));
     }
 
+    /// <summary>
+    /// Retorna o item pelo id
+    /// </summary>
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        int userId = GetUserIdFromToken();
+
+        var item = await _context.ShoppingItems
+            .Include(i => i.ShoppingList)
+            .FirstOrDefaultAsync(i => i.Id == id && i.ShoppingList.UserId == userId);
+
+        if (item == null)
+            return NotFound(new { message = "Lista de compras não encontrada" });
+
+        return Ok(MapToResponseItem(item));
+
+    }
     /// <summary>
     /// Atualiza o item do usuario autenticado
     /// </summary>
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, CreateShoppingItemDto dto)
+    public async Task<IActionResult> Update(int id, ShoppingItemUpdateDto dto)
     {
         int userId = GetUserIdFromToken();
 
-        var item = await _context.ShoppingItems.FirstOrDefaultAsync(i => i.Id == id && i.UserId == userId); 
+        var item = await _context.ShoppingItems.Include(i => i.ShoppingList)
+            .FirstOrDefaultAsync(i => i.Id == id && i.ShoppingList.UserId == userId);
 
-        if(item == null)
-            return NotFound("Item não encontrado");
+        if (item == null)
+            return NotFound(new { message = "Item não encontrado" });
 
         item.Name = dto.Name;
         item.Quantity = dto.Quantity;
@@ -95,10 +96,11 @@ public class ShoppingItemsController : ControllerBase
     {
         int userId = GetUserIdFromToken();
 
-        var item = await _context.ShoppingItems.FirstOrDefaultAsync(i => i.Id == id && i.UserId == userId);
+        var item = await _context.ShoppingItems.Include(i => i.ShoppingList)
+            .FirstOrDefaultAsync(i => i.Id == id && i.ShoppingList.UserId == userId);
 
-        if (item == null) 
-            return NotFound("Item não encontrado");
+        if (item == null)
+            return NotFound(new { message = "Item não encontrado" });
 
         _context.ShoppingItems.Remove(item);
         await _context.SaveChangesAsync();
@@ -124,8 +126,6 @@ public class ShoppingItemsController : ControllerBase
             Name = item.Name,
             Quantity = item.Quantity,
             UnitPrice = item.UnitPrice,
-            TotalPrice = item.Quantity * item.UnitPrice,
-            CreatedAt = item.CreatedAT
         };
     }
 }

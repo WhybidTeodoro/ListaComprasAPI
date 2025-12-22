@@ -45,7 +45,7 @@ public class ShoppingListController : ControllerBase
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.ShoppingList.Add(shoppingList);
+        _context.ShoppingLists.Add(shoppingList);
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetById), new { id = shoppingList.Id }, MapToResponseList(shoppingList));
@@ -60,7 +60,7 @@ public class ShoppingListController : ControllerBase
     {
         var userId = GetUserIdFromToken();
 
-        var lists = await _context.ShoppingList.
+        var lists = await _context.ShoppingLists.
             Where(l => l.UserId == userId).Select(l => new ShoppingListResponseDto
             {
                 Id = l.Id,
@@ -83,7 +83,7 @@ public class ShoppingListController : ControllerBase
     {
         var userId = GetUserIdFromToken();
 
-        var list = await _context.ShoppingList
+        var list = await _context.ShoppingLists
             .FirstOrDefaultAsync(l => l.UserId == userId && l.Id == id);
 
         if (list == null)
@@ -115,7 +115,7 @@ public class ShoppingListController : ControllerBase
 
         var userId = GetUserIdFromToken();
 
-        var list = await _context.ShoppingList
+        var list = await _context.ShoppingLists
             .FirstOrDefaultAsync(l => l.UserId == userId && l.Id == id);
 
         if (list == null)
@@ -137,13 +137,13 @@ public class ShoppingListController : ControllerBase
     {
         var userId = GetUserIdFromToken();
 
-        var list = await _context.ShoppingList
+        var list = await _context.ShoppingLists
             .FirstOrDefaultAsync(l => l.Id == id && l.UserId == userId);
 
         if (list == null)
             return NotFound(new { message = "Nenhuma lista de compras foi encontrada" });
 
-        _context.ShoppingList.Remove(list);
+        _context.ShoppingLists.Remove(list);
         await _context.SaveChangesAsync();
 
         return NoContent();

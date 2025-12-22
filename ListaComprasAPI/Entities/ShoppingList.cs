@@ -18,13 +18,12 @@ public class ShoppingList
     [Required]
     public DateTime CreatedAt { get; set; }
 
-    //Foreing key para o usuario
+    //Chave estrangeira para o usuario
     [Required]
     public int UserId { get; set; }
 
     //propriedade de navegação
-    [ForeignKey(nameof(UserId))]
     public User user { get; set; } = null!;
-
+    //Relacionamento 1:N de lista com itens
     public ICollection<ShoppingItem> Items { get; set; } = new List<ShoppingItem>();
 }

@@ -25,4 +25,7 @@ public class CreateShoppingItemDto
     /// </summary>
     [Range(0.01, double.MaxValue, ErrorMessage = "O preço unitario deve ser maior que 0")]
     public decimal UnitPrice { get; set; }
+
+    [Required]
+    public int ShoppingListId { get; set; }
 }

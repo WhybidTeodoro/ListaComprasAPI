@@ -38,21 +38,9 @@ public class ShoppingItem
     /// </summary>
     [NotMapped]
     public decimal TotalPrice => Quantity * UnitPrice;
-    /// <summary>
-    /// Data da criação do item
-    /// </summary>
-    [Required]
-    public DateTime CreatedAT { get; set; } = DateTime.UtcNow;
-    /// <summary>
-    /// Id do usuario dono do item. 
-    /// </summary>
-    [Required]
-    public int UserId { get; set; }
-    /// <summary>
-    /// Chave estrangeira da lista
-    /// </summary>
+    //Chave Estrangeira para lista
     [Required]
     public int ShoppingListId { get; set; }
     //Propriedade de Navegação
-    public ShoppingList shoppingList { get; set; } = null!;
+    public ShoppingList ShoppingList { get; set; } = null!;
 }

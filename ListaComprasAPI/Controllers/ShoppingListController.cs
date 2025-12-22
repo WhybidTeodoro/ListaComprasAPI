@@ -50,31 +50,6 @@ public class ShoppingListController : ControllerBase
 
         return CreatedAtAction(nameof(GetById), new { id = shoppingList.Id }, MapToResponseList(shoppingList));
     }
-
-    /// <summary>
-    /// Retorna todas as listas do usuario
-    /// </summary>
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var userId = GetUserIdFromToken();
-
-        var lists = await _context.ShoppingLists.
-            Where(l => l.UserId == userId).Select(l => new ShoppingListResponseDto
-            {
-                Id = l.Id,
-                Name = l.Name,
-                CreatedAt = l.CreatedAt,
-                TotalValue = 0
-            }).ToListAsync();
-
-        if (lists == null)
-            return NotFound(new { message = "Nenhuma lista de compras foi encontrada" });
-
-        return Ok(lists);
-    }
-
     /// <summary>
     /// Obtem a lista especifica do usuario
     /// </summary>

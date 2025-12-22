@@ -32,6 +32,9 @@ public class ShoppingList
     {
         get
         {
+            if(Items == null || !Items.Any())
+                return 0;
+
             return Items.Sum(item => item.TotalPrice);
         }
     }

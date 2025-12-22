@@ -53,17 +53,18 @@ public class ShoppingListsController : ControllerBase
     {
         var userId = GetUserIdFromToken();
 
-        var shoppingList = await _context.ShoppingLists
+        var lists = await _context.ShoppingLists
             .Where(sl => sl.UserId == userId)
             .Select(sl => new ShoppingListSumaryDto
             {
                 Id = sl.Id,
                 Name = sl.Name,
                 CreatedAt = sl.CreatedAt,
-                TotalList = sl.Items.Sum(item => item.Quantity * item.UnitPrice)
+                TotalList = sl.Items.Any()
+                            ? sl.Items.Sum(item => item.Quantity * item.UnitPrice) : 0
             }).ToListAsync();
 
-        return Ok(shoppingList);
+        return Ok(lists);
     }
 
     private int GetUserIdFromToken()

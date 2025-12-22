@@ -11,6 +11,7 @@ public class ShoppingItem
     ///<summary>
     ///Identificador unico do item
     ///</summary>
+    [Key]
     public int Id { get; set; }
     /// <summary>
     /// Nome do item (Ex: arroz, feijão)
@@ -29,6 +30,7 @@ public class ShoppingItem
     /// </summary>
     [Required]
     [Column(TypeName = "decimal(10,2)")]
+    [Range(0.01, double.MaxValue)]
     public decimal UnitPrice { get; set; }
     /// <summary>
     /// Valor total do item na lista(Quantidade x preço unitario)
@@ -46,4 +48,11 @@ public class ShoppingItem
     /// </summary>
     [Required]
     public int UserId { get; set; }
+    /// <summary>
+    /// Chave estrangeira da lista
+    /// </summary>
+    [Required]
+    public int ShoppingListId { get; set; }
+    //Propriedade de Navegação
+    public ShoppingList shoppingList { get; set; } = null!;
 }

@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ListaComprasAPI.Entities;
 
+/// <summary>
+/// Representa a lista de compras pertencente a um usuario
+/// </summary>
 public class ShoppingList
 {
     [Key]
@@ -22,4 +25,6 @@ public class ShoppingList
     //propriedade de navegação
     [ForeignKey(nameof(UserId))]
     public User user { get; set; } = null!;
+
+    public ICollection<ShoppingItem> Items { get; set; } = new List<ShoppingItem>();
 }

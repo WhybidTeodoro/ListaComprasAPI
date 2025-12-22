@@ -64,7 +64,7 @@ public class ShoppingItemsController : ControllerBase
         _context.ShoppingItems.Add(item);
         await _context.SaveChangesAsync();
                 
-        return CreatedAtAction(nameof(GetAll), new { id = item.Id }, MapToResponse(item));
+        return CreatedAtAction(nameof(GetAll), new { id = item.Id }, MapToResponseItem(item));
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ public class ShoppingItemsController : ControllerBase
         return int.Parse(userIdClaim.Value);
     }
 
-    private static ShoppingItemResponseDto MapToResponse(ShoppingItem item)
+    private static ShoppingItemResponseDto MapToResponseItem(ShoppingItem item)
     {
         return new ShoppingItemResponseDto
         {

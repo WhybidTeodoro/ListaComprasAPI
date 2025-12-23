@@ -32,6 +32,12 @@ public class ShoppingItem
     [Column(TypeName = "decimal(10,2)")]
     [Range(0.01, double.MaxValue)]
     public decimal UnitPrice { get; set; }
+
+    /// <summary>
+    /// Representa se o item foi comprado ou não
+    /// </summary>
+    [Required]
+    public bool IsPurchased { get; set; } = false;
     /// <summary>
     /// Valor total do item na lista(Quantidade x preço unitario)
     /// Não é armazenado no banco, é calculado.

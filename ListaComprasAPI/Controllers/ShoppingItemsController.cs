@@ -91,6 +91,30 @@ public class ShoppingItemsController : ControllerBase
         return NoContent();
     }
 
+    [HttpPut("{id:int}/purchased")]
+    public async Task<IActionResult> MarcarComoComprado(int id)
+    {
+        var userId = GetUserIdFromToken();
+
+        var item = await _context.ShoppingItems
+            .Include(i => i.ShoppingList)
+            .FirstOrDefaultAsync(i => i.Id == id && i.ShoppingList.UserId == userId);
+
+        if (item == null)
+            return NotFound(new { message = "Item não encontrado" }); 
+
+        item.IsPurchased = true;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            item.Id,
+            item.Name,
+            item.IsPurchased
+        });
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

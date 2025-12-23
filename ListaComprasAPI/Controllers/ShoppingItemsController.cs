@@ -103,7 +103,7 @@ public class ShoppingItemsController : ControllerBase
         if (item == null)
             return NotFound(new { message = "Item não encontrado" }); 
 
-        item.IsPurchased = true;
+        item.IsPurchased = !item.IsPurchased;
 
         await _context.SaveChangesAsync();
 

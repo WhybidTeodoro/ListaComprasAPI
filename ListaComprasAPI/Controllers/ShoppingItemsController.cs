@@ -28,6 +28,9 @@ public class ShoppingItemsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(CreateShoppingItemDto dto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         int userId = GetUserIdFromToken();
 
         var shoppingList = await _context.ShoppingLists
@@ -62,12 +65,14 @@ public class ShoppingItemsController : ControllerBase
             .FirstOrDefaultAsync(i => i.Id == id && i.ShoppingList.UserId == userId);
 
         if (item == null)
-            return NotFound(new { message = "Lista de compras não encontrada" });
+            return NotFound(new { message = "Item não encontrado" });
 
         return Ok(MapToResponseItem(item));
 
     }
-
+    /// <summary>
+    /// Retorna itens pendentes de compra
+    /// </summary>
     [HttpGet("pendentes")]
     public async Task<IActionResult> GetItensPendentes()
     {
@@ -95,6 +100,9 @@ public class ShoppingItemsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, ShoppingItemUpdateDto dto)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         int userId = GetUserIdFromToken();
 
         var item = await _context.ShoppingItems.Include(i => i.ShoppingList)
@@ -111,7 +119,9 @@ public class ShoppingItemsController : ControllerBase
 
         return NoContent();
     }
-
+    /// <summary>
+    /// Retorna o item como comprado
+    /// </summary>
     [HttpPut("{id:int}/purchased")]
     public async Task<IActionResult> MarcarComoComprado(int id)
     {
@@ -135,7 +145,9 @@ public class ShoppingItemsController : ControllerBase
             item.IsPurchased
         });
     }
-
+    /// <summary>
+    /// Deleta o item pelo id
+    /// </summary>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -152,7 +164,9 @@ public class ShoppingItemsController : ControllerBase
 
         return NoContent();
     }
-
+    /// <summary>
+    /// Verifica o id do usuario pelo token
+    /// </summary>
     private int GetUserIdFromToken()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -162,7 +176,9 @@ public class ShoppingItemsController : ControllerBase
 
         return int.Parse(userIdClaim.Value);
     }
-
+    /// <summary>
+    /// Retorna o response de shoppingitem
+    /// </summary>
     private static ShoppingItemResponseDto MapToResponseItem(ShoppingItem item)
     {
         return new ShoppingItemResponseDto
@@ -171,6 +187,7 @@ public class ShoppingItemsController : ControllerBase
             Name = item.Name,
             Quantity = item.Quantity,
             UnitPrice = item.UnitPrice,
+            IsPurchased = item.IsPurchased
         };
     }
 }

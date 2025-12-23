@@ -26,7 +26,6 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Construtor com injeção do DbContext
     /// </summary>
-   
     public AuthController(AppDbContext context, IConfiguration configuration)
     {
         _context = context;
@@ -125,10 +124,10 @@ public class AuthController : ControllerBase
 
         var claims = new[]
         {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email),
-        new Claim("name", user.Name)
-    };
+         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+         new Claim(ClaimTypes.Email, user.Email),
+         new Claim(ClaimTypes.Name, user.Name)
+        };
 
         var token = new JwtSecurityToken(
             issuer: jwtSettings["Issuer"],

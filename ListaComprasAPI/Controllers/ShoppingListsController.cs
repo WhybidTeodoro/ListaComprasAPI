@@ -20,6 +20,9 @@ public class ShoppingListsController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Retorna lista completa com valores pelo id
+    /// </summary>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -48,6 +51,9 @@ public class ShoppingListsController : ControllerBase
         return Ok(shoppingList);
             
     }
+    /// <summary>
+    /// Retorna todas as lista e seus valores
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {

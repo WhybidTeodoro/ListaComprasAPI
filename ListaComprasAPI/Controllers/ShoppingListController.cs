@@ -32,9 +32,6 @@ public class ShoppingListController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        if (string.IsNullOrWhiteSpace(dto.Name))
-            return BadRequest(new { message = "O Nome da lista não pode ser vazio" });
-
         //Obtem o id do usuario a partir do token JWT
         var userId = GetUserIdFromToken();
 
@@ -69,7 +66,7 @@ public class ShoppingListController : ControllerBase
             Id = list.Id,
             Name = list.Name,
             CreatedAt = list.CreatedAt,
-            TotalValue = 0
+            TotalValue = list.TotalList
         };
 
         return Ok(response);
@@ -124,7 +121,9 @@ public class ShoppingListController : ControllerBase
         return NoContent();
     }
 
-
+    /// <summary>
+    /// Verifica o id do usuario pelo token
+    /// </summary>
     private int GetUserIdFromToken()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -135,6 +134,9 @@ public class ShoppingListController : ControllerBase
         return int.Parse(userIdClaim.Value);
     }
 
+    /// <summary>
+    /// Retorna o response de shoppinglist
+    /// </summary>
     private static ShoppingListResponseDto MapToResponseList(ShoppingList list)
     {
         return new ShoppingListResponseDto
@@ -142,7 +144,7 @@ public class ShoppingListController : ControllerBase
             Id = list.Id,
             Name = list.Name,
             CreatedAt = list.CreatedAt,
-            TotalValue = 0
+            TotalValue = list.TotalList
         };
     }
 }

@@ -67,6 +67,27 @@ public class ShoppingItemsController : ControllerBase
         return Ok(MapToResponseItem(item));
 
     }
+
+    [HttpGet("pendentes")]
+    public async Task<IActionResult> GetItensPendentes()
+    {
+        var userId = GetUserIdFromToken();
+
+        var itensPendentes = await _context.ShoppingItems
+            .Where(item => item.IsPurchased == false && item.ShoppingList.UserId == userId)
+            .Select(item => new ShoppingItemResponseDto
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice,
+                IsPurchased = item.IsPurchased
+            }).ToListAsync();
+
+        return Ok(itensPendentes);
+    }
+
+
     /// <summary>
     /// Atualiza o item do usuario autenticado
     /// </summary>
